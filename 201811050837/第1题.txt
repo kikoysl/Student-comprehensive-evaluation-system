@@ -1,0 +1,68 @@
+head.h
+
+#ifndef STUDY1_H_
+#define STUDY1_H_
+
+int fun1(int, int);
+void fun2(int &a, int &b);
+void fun3(int *a, int *b);
+
+#endif
+
+
+fun.c
+
+#include"head.h"
+#include<iostream>
+using namespace std;
+
+
+int fun1(int a, int b) //返回值形式
+{
+	int c;
+	c = a / 10 * 10 + a % 10 * 1000 + b / 10 + b % 10 * 100;
+	return c;
+}
+
+void fun2(int &x, int &y) //引用传参
+{
+	int a ,b, c;
+	a = x;
+	b = y;
+	c = a / 10 * 10 + a % 10 * 1000 + b / 10 + b % 10 * 100;
+	cout << "生成的新数为：" << c << endl;
+}
+
+void fun3(int *a, int *b)
+{
+	int c;
+	c = *a / 10 * 10 + *a % 10 * 1000 + *b / 10 + *b %10 * 100;
+	cout << "生成的新数为：" << c << endl;
+}
+
+
+
+
+test.c
+
+
+#include<iostream>
+#include"head.h"
+using namespace std;
+int main()
+{
+	int a, b, c;
+	cout << "请输入两个10-99之间的整数数字，输入格式为：a b"<<endl;
+	cin >> a >> b;
+
+    c = fun1(a, b); //返回值
+	cout << "生成的新数为：" << c << endl;
+
+	fun2(a, b); //引用传参
+
+	fun3(&a, &b); //指针传参
+
+	return 0;
+}
+
+
