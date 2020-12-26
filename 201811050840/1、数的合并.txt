@@ -1,0 +1,71 @@
+%%%%%%返回值传参
+%%%%%%%
+#include "stdio.h"
+#include<iostream.h>
+
+int fun(int a,int b)
+{
+    int c;
+    c=a%100/10 *10+a%10 *1000+ b%100/10+b%10*100;
+    return c;
+}
+
+int main()
+{
+   int m,n;
+   cout<<"a=";
+   cin>>m;
+   cout<<endl;
+   cout<<"b=";
+   cin>>n;
+   cout<<endl;
+   cout<<"c="<<fun(m,n)<<endl;
+}
+
+%%%%%%%引用传参
+%%%%%%%
+#include "stdio.h"
+#include<iostream.h>
+
+int fun(int& a,int& b)     /////a,b直接引用m,n
+{
+    int c;
+    c=a%100/10 *10+a%10 *1000+ b%100/10+b%10*100;
+    return c;
+}
+
+int main()
+{
+   int m,n;
+   cout<<"a=";
+   cin>>m;
+   cout<<endl;
+   cout<<"b=";
+   cin>>n;
+   cout<<endl;
+   cout<<"c="<<fun(m,n)<<endl;
+}
+
+
+%%%%%%%指针传参
+%%%%%%%
+#include "stdio.h"
+#include<iostream.h>
+
+int fun(int a,int b,int *pc)     /////建立一个int的指针，指向c的地址
+{
+    *pc=a%100/10 *10+a%10 *1000+ b%100/10+b%10*100;
+    return *pc;
+}
+
+int main()
+{
+   int a,b,c;
+   cout<<"a=";
+   cin>>a;
+   cout<<endl;
+   cout<<"b=";
+   cin>>b;
+   cout<<endl;
+   cout<<"c="<<fun(a,b,&c)<<endl;
+}

@@ -1,0 +1,34 @@
+#include<stdio.h>
+#include<iostream> 
+#include<algorithm>
+using namespace std;
+
+struct node
+{
+   int chinese,math,english; 
+   int num,sum;   
+}student[3000];
+
+int cmp(node x,node y)
+{
+    if(x.sum!=y.sum) return x.sum>y.sum;     //总分不同返回总分高的
+    if(x.chinese!=y.chinese) return x.chinese>y.chinese;     //总分相同返回语文分高的
+    if(x.num!=y.num) return x.num<y.num;     //总分语文相同返回学号小的
+}
+
+int main()
+{
+    int i,j,n,m;
+    cin>>n;
+    for(i=0;i<n;i++)
+    {
+      cin>>student[i].chinese>>student[i].math>>student[i].english;
+      student[i].num=i+1;
+      student[i].sum=student[i].chinese+student[i].math+student[i].english;
+    }
+    sort(student,student+n,cmp);     //根据自定义的规则进行排序
+    for(i=0;i<5;i++)
+    cout<<student[i].num<<' '<<student[i].sum<<endl;
+    while(1);
+    return 0;
+}
