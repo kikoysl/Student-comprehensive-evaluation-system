@@ -1,0 +1,777 @@
+问题分析： 将两个十位数合并成一个四位数，调用主函数fun。在不同的情况下，将函数结果传回主函数，引用型指针型直接型传参。 
+代码：直接和引用
+#include"stdio.h"
+void fun1(int a,int b)
+{
+	int a1,a2,b1,b2,c;
+	a1=a%10;
+	a2=(a-a1)/10;
+	b1=b%10;
+	b2=(b-b1)/10;
+	c=(a1*1000)+(b1*100)+(a2*10)+b2;
+	printf("返回值：%d",c);
+}
+int fun2(int a,int b)
+{
+	int a1,a2,b1,b2,c;
+	a1=a%10;
+	a2=(a-a1)/10;
+	b1=b%10;
+	b2=(b-b1)/10;
+	c=(a1*1000)+(b1*100)+(a2*10)+b2;
+	return c;
+}
+int fun3(int *a,int *b)
+{
+	int a1,a2,b1,b2,*c;
+	a1=*a%10;
+	a2=(*a-a1)/10;
+	b1=*b%10;
+	b2=(*b-b1)/10;
+	c=(a1*1000)+(b1*100)+(a2*10)+b2;
+	return &c;
+}
+void main()
+{
+	int a,b,c;
+	printf("请输入a:");
+	scanf("%d",&a);
+	printf("请输入b:");
+	scanf("%d",&b);
+       fun1(a,b);
+	   c=fun2(a,b);
+	   printf("输出值：%d",c);	 
+}
+指针型：
+#include < iostream.h >
+void fun(int a,int b,long *c)
+{
+*c=(a%10)*1000+(b%10)*100+(a/10)*10+(b/10);
+}
+void main()
+{
+int a,b;
+long c;
+printf("请输入a，b的值：");
+scanf("%d%d",&a,&b)
+fun(a,b,&c);
+printf("输出c值：%d",c)
+}
+
+
+
+
+
+
+运行截图：
+
+
+总结： 将两个十位数合并成一个四位数，调用主函数fun。在不同的情况下，将函数结果传回主函数，引用和直接的传参都可以掌握，在用指针型时，记不清相应的格式，也忘记怎么传参，通过网上的学习，了解地址传参才打出相应的代码。
+2.题目描述
+一堆猴子都有编号，编号是1，2，3 ...m，这群猴子（m个）按照1-m的顺序围坐一圈，从第1开始数，每数到第N个，该猴子就要离开此圈，这样依次下来，直到圈中只剩下最后一只猴子，则该猴子为大王。
+基本要求：
+（1） 输入数据：输入m,n m,n 为整数，n<m
+（2）中文提示按照m个猴子，数n个数的方法，输出为大王的猴子是几号 ，建立一个函数来实现此功能
+（3）分别用数组和链表来实现，并比较分析不同存储结构下的时间复杂度和空间复杂度。
+
+问题分析： 采用数组方法来实现，主要思路是，先采用动态分配内存来得到一个一维的长度为m的整型数组，并且赋值为相对应猴子的编号，用一个计数器来数数，得到要出列的猴子的编号，然后这个猴子的编号为0，表示出列。循环查找要出列猴子的编号，直到只剩下一个猴子。在查找猴子出列的过程中，当遇到数组的下标到达尾部时，使下标重新到数组的头部，即使数组的下标为0。用一个计数器来计数，然后来查找出列的猴子编号，循环链表需要一个指针来指向当前指针的位置，及当前指针的前驱，而单链表需要一个头指针。
+代码：
+链表：
+#include <stdio.h>
+#include <stdlib.h>
+struct num
+{
+    int number;
+    struct num *next;
+};
+int getnumber(int m,int n);
+int getnumber1(int m,int n);
+int main()
+{
+    int m,n;
+	printf("请输入猴子数量：");
+    scanf("%d",&m);
+	printf("请输入报数：");
+	scanf("%d",&n);
+    printf("循环链表：猴王编号为:%d\n\n\n",getnumber(m,n));
+    printf("单向链表：猴王编号为:%d\n",getnumber1(m,n));
+    return 0;
+}
+int getnumber(int m,int n)
+{
+    struct num *p,*p1,*head,*temp;
+    int i=0,flag;
+    p=(struct num*)malloc(sizeof(struct num));
+    head=p;
+    while(i<m)
+    {
+        p1=p;
+        p->number=i+1;
+        p=(struct num*)malloc(sizeof(struct num));
+        p1->next=p;
+        i++;
+    }
+    p1->next=head;     
+    free(p);
+    temp=p1; 
+    i=1;
+    while(i<m)
+    {
+        flag=1;     
+        while(flag<n)
+        {
+            temp=head;
+            head=head->next;
+            flag++;
+        }
+        temp->next=head->next;
+        printf("删除猴子的编号:%d\n",head->number);
+        free(head);
+        head=temp->next;
+        i++;
+    }
+    return head->number;
+}
+
+
+int getnumber1(int m,int n)
+{
+    struct num *p,*p1,*head,*temp;
+    int i=0,flag;
+    p=(struct num*)malloc(sizeof(struct num));
+    head=p;
+    if(n==1)
+        return m;
+    while(i<m)
+    {
+        p1=p;
+        p->number=i+1;
+        p=(struct num*)malloc(sizeof(struct num));
+        p1->next=p;
+        i++;
+    }
+    p1->next=NULL;   
+    p=head;
+    i=0;
+    flag=0;
+    while(i!=m-1)
+    {
+        if(flag==n-1)
+        {
+            printf("删除猴子的编号:%d\n",p->number);
+            if(p==head)   
+            {
+                head=head->next;
+                p=head;
+            }
+            else if(p->next==NULL) 
+            {
+                temp->next=NULL;
+                p=head;
+            }
+            else                   
+            {
+                temp->next=p->next;
+                p=p->next;
+            }
+            i++;
+            flag=0;
+        }
+
+        if(p->next==NULL)
+        {
+            p=head;
+        }
+        else
+        {
+            temp=p;
+            p=p->next;
+        }
+        flag++;
+    }
+    return head->number;
+}
+数组：
+#include <stdio.h>
+#include <stdlib.h>
+int getcount(int *p,int m,int n);
+int main()
+{
+    int *p;
+    int m,n,i,j,flag,temp;
+    while(1){
+		printf("请输入猴子个数：");
+    scanf("%d",&m);
+		printf("请输入报数：");
+		scanf("%d",&n);
+    p=(int *)malloc(sizeof(int)*m);
+    for(i=0;i<m;i++)
+        p[i]=i+1;
+    printf("猴王的编号%d\n",getcount(p,m,n));
+    }
+    free(p);
+    return 0;
+}
+int getcount(int *p,int m,int n)
+{
+    int i,temp,flag,count;
+    temp=0;
+    count=m;
+     while(count!=1)
+    {
+        flag=1;             
+        while(flag<n)   
+        {
+            if(temp>=m)
+                temp=0;
+            if(p[temp]!=0)
+            {
+                flag++;
+            }
+            temp++;
+        }
+        if(temp>=m)
+            temp=0;
+        while(temp<m&&p[temp]==0)
+            {
+                   temp++;
+                   if(temp>=m)
+                       temp=0;
+            }      
+        p[temp]=0;
+        count-=1;    
+    }
+    for(i=0;i<m;i++)
+    {
+        if(p[i]!=0)
+        {
+            return p[i];
+        }
+    }
+}
+运行截图：
+链表：
+
+数组：
+
+总结：采用数组方法来实现，主要思路是，先采用动态分配内存来得到一个一维的长度为m的整型数组，并且赋值为相对应猴子的编号，用一个计数器来数数，得到要出列的猴子的编号，然后这个猴子的编号为0，表示出列。循环查找要出列猴子的编号，直到只剩下一个猴子。在查找猴子出列的过程中，当遇到数组的下标到达尾部时，使下标重新到数组的头部，即使数组的下标为0。用一个计数器来计数，然后来查找出列的猴子编号，循环链表需要一个指针来指向当前指针的位置，及当前指针的前驱，而单链表需要一个头指针。
+
+3.题目描述
+某小学最近得到了一笔赞助，打算拿出其中一部分为学习成绩优秀的前5名学生发奖学金。期末，每个学生都有3门课的成绩:语文、数学、英语。先按总分从高到低排序，如果两个同学总分相同，再按语文成绩从高到低排序，如果两个同学总分和语文成绩都相同，那么规定学号小的同学 排在前面，这样，每个学生的排序是唯一确定的。
+任务：先根据输入的3门课的成绩计算总分，然后按上述规则排序，最后按排名顺序输出前五名名学生的学号和总分。注意，在前5名同学中，每个人的奖学金都不相同，因此，你必须严格按上述规则排序。例如，在某个正确答案中，如果前两行的输出数据(每行输出两个数:学号、总分) 是:
+7 279
+5 279
+这两行数据的含义是:总分最高的两个同学的学号依次是7号、5号。这两名同学的总分都是279(总分等于输入的语文、数学、英语三科成绩之和)，但学号为7的学生语文成绩更高一些。如果你的前两名的输出数据是:
+5 279
+7 279
+则按输出错误处理，不能得分。
+输入：
+第1行为一个正整数n，表示该校参加评选的学生人数。
+第2到n+1行，每行有3个用空格隔开的数字，每个数字都在0到100之间。第j行的3个数字依次表示学号为j−1的学生的语文、数学、英语的成绩。每个学生的学号按照输入顺序编号为l∼n (恰好是输入数据的行号减1)。
+所给的数据都是正确的，不必检验。
+输入样例：
+8 
+80 89 89 
+88 98 78 
+90 67 80 
+87 66 91 
+78 89 91 
+88 99 77 
+67 89 64 
+78 89 98
+输出：
+共有5行，每行是两个用空格隔开的正整数，依次表示前5名学生的学号和总分。
+输出样例：
+8 265
+2 264 
+6 264 
+1 258 
+5 258
+基本要求：使用结构体实现
+
+问题分析：输入数据提供语文，数学，英语三科成绩，但输出的数组需要是学号，总分，语文，所以先把输出的数据进行变换，然后送入sum数组。第二步就是对数组的排序，采用冒泡法或者选择法就行。
+代码：
+#include<iostream>
+#include<algorithm>
+#include<stdio.h>
+using namespace std;
+
+struct student
+{
+    int num;
+    int sum;
+    int yw;
+    int sx;
+    int yy;
+};
+
+bool cmp(student a,student b)
+{
+    if(a.sum!= b.sum)
+       return a.sum> b.sum;
+    else
+    {
+       if(a.yw!= b.yw)
+           return a.yw> b.yw;
+       else
+           return a.num< b.num;
+    }
+}
+
+int main()
+{
+    int n;
+   printf("请输入n值：");
+   scanf("%d",&n);
+   while(1)
+    {
+       student stu[10000];
+       for(int i = 0;i < n;i++)
+       {
+		   printf("请输入语文，数学，英语成绩：");
+		   scanf("%d%d%d",&stu[i].yw,&stu[i].sx,&stu[i].yy);
+           stu[i].sum=stu[i].yw+stu[i].sx+stu[i].yy;
+           stu[i].num=i+1;;
+       }
+       sort(stu,stu+n,cmp);
+       for(i=0;i<5;i++)
+           cout<<stu[i].num<< " " <<stu[i].sum<<endl;
+       if(cin>>n)
+           cout<<endl ;
+       else break;
+    }
+    return 0;
+}
+运行截图：
+
+总结；在核算成绩时很顺利，但在排序时忘记选择还有冒泡法的基本代码，在网上查找，才回忆起相应的代码。 
+
+4.题目描述
+疫情期间，瘟疫公司为了配合国家进行疫情防控工作，开始了对传染人数预测的研究。据悉，我国完备的医疗健康监测体系已经准确地绘制了P省感染分布情况地图。地图是一个N*M的矩形，地图上的每个点有三种状态未感染、被感染和被保护，分别用大写字母O,X,P表示。例如：
+OOOOOPOOOO
+OXOOOPOOOO
+OOOOOPOOOO
+OOOOOPOOOO
+之所以能根据监测数据成功预测，是因为某医疗科学团队经过实验推理证明，一段病毒周期之内一个感染区域会感染上、下、左、右四个方向上的区域，被保护的区域则不会被传染。例如，经历了1段病毒周期后的P省感染分布图变为：
+OXOOOPOOOO
+XXXOOPOOOO
+OXOOOPOOOO
+OOOOOPOOOO
+但是随着时间的推移，2段、3段、4段......很多段病毒周期过后，病毒的最大感染情况为：
+XXXXXPOOOO
+XXXXXPOOOO
+XXXXXPOOOO
+XXXXXPOOOO
+因为被保护区不会被感染，能将病毒的传染阻断。现在，作为瘟疫公司的高级工程师，你要实现的是输入一个地图和经历的病毒周期数，推算出经历了这些病毒周期后的新地图。
+输入
+共1+M+1行
+第一行: 两个数字N和M，表示地图的长宽。
+第二行开始的M行: 每行是长度为M的字符串，仅可能包含三个字母O、X或P，表示地图上每个区域的状态。
+第M+2行: 一个整数C，表示经历了C个病毒周期。
+输出
+共M行
+表示经历了C个病毒周期过后新的感染情况分布地图
+输入样例：
+10 4
+OOOOOPOOOO
+OXOOOPOOOO
+OOOOOPOOOO
+OOOOOPOOOO
+2
+输出样例：
+XXXOOPOOOO
+XXXXOPOOOO
+XXXOOPOOOO
+OXOOOPOOOO
+问题分析：本次是字符串数组的建立，用键盘输入字符，保存在二维数组中，再对二维数组中的‘X’进行扫描，确定位置，将其赋值给另一个二维数组，再进行“感染”操作。 
+代码：
+#include<iostream.h>
+void main()
+{
+	int M=0,N=0,i,j,c;
+	cout<<"请输入行数M："<<endl;
+	cin>>M;
+	cout<<"请输入列数N: "<<endl;
+	cin>>N;
+    cout<<"请输入病毒周期c:"<<endl;
+	cin>>c;
+	char a[100][100],a1[100][100]={'B'};
+	cout<<"请输入矩阵："<<endl;
+	for(i=0;i<M;i++)
+	{	
+		for(j=0;j<N;j++)
+		{
+			cin>>a[i][j];
+		}
+	}
+	while(c--)
+	{
+		for(i=0;i<M;i++)
+		{
+			for(j=0;j<N;j++)
+			{
+				if(a[i][j]=='X')
+				{
+				a1[i][j]=a[i][j];
+				}
+			}
+		}
+     for(i=0;i<N;i++)
+		{
+			for(j=0;j<M;j++)
+			{
+				if(a[i][j]==a1[i][j])
+				{
+                    if(a[i-1][j] != 'P') a[i-1][j] ='X';	
+					if(a[i+1][j] != 'P') a[i+1][j]='X';
+					if(a[i][j+1] != 'P') a[i][j+1]='X';
+					if(a[i][j-1] != 'P') a[i][j-1]='X';
+				}
+			}
+	 }
+
+	}
+  for(i=0;i<M;i++)
+		{
+			cout<<endl;
+			for(j=0;j<N;j++)
+				cout<<a[i][j];
+		}
+		cout<<endl;
+	
+}
+
+
+
+
+
+
+运行截图：
+
+总结：在运行过程中一直出现问题，慢慢的优化算法，想出了新引用了新的数组a1，将原数组中的‘X’进行标记，再进行‘感染’操作。 
+5.题目描述
+啊~多么美好的一个后序遍历问题...(疯狂暗示)本来要出另外一个题的...结果生成数据的时候翻车了就明天再出吧。今天先水一道多项式计算器。可不要去网上抄代码哦，一眼就看出来了。
+输入一个简单多项式，输出结果。多项式可能包含对整数的加减两种运算，中间没有空格。
+输入
+一行，一个多项式，保证输入合法
+输出
+一个结果
+输入样例：
+((1+2)*3+4)+5+6*7
+输出样例：
+60
+
+问题分析：
+代码：
+#include <iostream>
+#include <string>
+#include <stack>
+
+using namespace std;
+
+double calculate(string s)
+{
+    stack<double> num;
+    stack<char> op;
+    string temp = "";
+    for(int i = 0; i < s.length(); i++)
+    {
+        if(s[i] >= '0' && s[i] <= '9')
+        {
+            temp += s[i];
+        }
+        if((s[i] < '0' || s[i] > '9') && temp != "")
+        {
+            num.push(atoi(temp.c_str()));
+            temp = "";
+        }
+        if(s[i] == '(' || s[i] == '[' || s[i] == '{')
+        {
+            op.push(s[i]);
+        }
+        if(s[i] == '*' || s[i] == '/')
+        {
+            if(!op.empty())
+            {
+                char lastop = op.top();
+                if(lastop == '/')
+                {
+                    double secondnum = num.top();
+                    num.pop();
+                    double firstnum = num.top();
+                    num.pop();
+                    num.push(firstnum*1.0/secondnum);
+                    op.pop();
+                }
+            }
+            op.push(s[i]);
+        }
+        if(s[i] == '+' || s[i] == '-')
+        {
+            if(i == 0 || s[i-1] == '(' || s[i-1] == '[' || s[i-1] == '{')
+            {
+                num.push(0);
+            }
+            if(!op.empty())
+            {
+                char lastop = op.top();
+                while(!op.empty() && (lastop == '*' || lastop == '/'))
+                {
+                    double secondnum = num.top();
+                    num.pop();
+                    double firstnum = num.top();
+                    num.pop();
+                    if(lastop == '*')
+                        num.push(firstnum*secondnum);
+                    else if(lastop == '/')
+                        num.push(firstnum*1.0/secondnum);
+                    op.pop();
+                    if(!op.empty())
+                        lastop = op.top();
+                }
+                if(lastop == '-')
+                {
+                    double secondnum = num.top();
+                    num.pop();
+                    double firstnum = num.top();
+                    num.pop();
+                    num.push(firstnum-secondnum);
+                    op.pop();
+                }
+            }
+            op.push(s[i]);
+        }
+        if(s[i] == ')')
+        {
+            if(!op.empty())
+            {
+                char lastop = op.top();
+                while(!op.empty() && lastop != '(')
+                {
+                    double secondnum = num.top();
+                    num.pop();
+                    double firstnum = num.top();
+                    num.pop();
+                    switch(lastop)
+                    {
+                        case '+':
+                            num.push(firstnum+secondnum);
+                            break;
+                        case '-':
+                            num.push(firstnum-secondnum);
+                            break;
+                        case '*':
+                            num.push(firstnum*secondnum);
+                            break;
+                        case '/':
+                            num.push(firstnum*1.0/secondnum);
+                            break;
+                    }
+                    op.pop();
+                    if(!op.empty())
+                        lastop = op.top();
+                }
+                if(lastop == '(')
+                    op.pop();
+            }
+        }
+        if(s[i] == ']')
+        {
+            if(!op.empty())
+            {
+                char lastop = op.top();
+                while(!op.empty() && lastop != '[')
+                {
+                    double secondnum = num.top();
+                    num.pop();
+                    double firstnum = num.top();
+                    num.pop();
+                    switch(lastop)
+                    {
+                        case '+':
+                            num.push(firstnum+secondnum);
+                            break;
+                        case '-':
+                            num.push(firstnum-secondnum);
+                            break;
+                        case '*':
+                            num.push(firstnum*secondnum);
+                            break;
+                        case '/':
+                            num.push(firstnum*1.0/secondnum);
+                            break;
+                    }
+                    op.pop();
+                    if(!op.empty())
+                        lastop = op.top();
+                }
+                if(lastop == '[')
+                    op.pop();
+            }
+        }
+        if(s[i] == '}')
+        {
+            if(!op.empty())
+            {
+                char lastop = op.top();
+                while(!op.empty() && lastop != '{')
+                {
+                    double secondnum = num.top();
+                    num.pop();
+                    double firstnum = num.top();
+                    num.pop();
+                    switch(lastop)
+                    {
+                        case '+':
+                            num.push(firstnum+secondnum);
+                            break;
+                        case '-':
+                            num.push(firstnum-secondnum);
+                            break;
+                        case '*':
+                            num.push(firstnum*secondnum);
+                            break;
+                        case '/':
+                            num.push(firstnum*1.0/secondnum);
+                            break;
+                    }
+                    op.pop();
+                    if(!op.empty())
+                        lastop = op.top();
+                }
+                if(lastop == '{')
+                    op.pop();
+            }
+        }
+    }
+    if(temp != "")
+        num.push(atoi(temp.c_str()));
+    while(!op.empty())
+    {
+         char lastop = op.top();
+         double secondnum = num.top();
+         num.pop();
+         double firstnum = num.top();
+         num.pop();
+         switch(lastop)
+         {
+             case '+':
+                 num.push(firstnum+secondnum);
+                 break;
+             case '-':
+                 num.push(firstnum-secondnum);
+                 break;
+             case '*':
+                 num.push(firstnum*secondnum);
+                 break;
+             case '/':
+                 num.push(firstnum*1.0/secondnum);
+                 break;
+         }
+         op.pop();
+    }
+    if(num.empty())
+        return 0;
+    double value = num.top();
+    num.pop();
+    return value;
+}
+
+void test1()
+{
+    string s;
+    while(cin >> s)
+    {
+        cout << calculate(s) << endl;
+    }
+}
+
+int main()
+{
+    test1();
+    return 0;
+}
+
+
+
+
+
+
+运行截图：
+
+总结；
+6.题目描述
+编写一个程序，有一个汽车类vehicle,它具有一个需传递参数的构造函数，类中的数据成员：车轮个数wheels和车重weight放在保护段中；小车类car是它的私有派生类，其中包含载人数passenger_load；卡车类truck是vehicle的私有派生类，其中包含载人类passenger_load和载重量payload。每个类都有相关数据的输出方法。
+问题分析：小车类car是vehicle类的派生类，它是有一个需传递参数的构造函数，车类car中的私有数据成员为：小车载人数passenger_load，小车类car中的公有成员函数为：get_passengers()（返回车载人数的值）、print()（输出小车车轮的个数和车重的公斤数以及车载人数的个数）；
+
+代码：
+#include<iostream>
+using namespace std;
+class vehicle
+{
+protected:
+	int wheels;
+	float weight;
+public:
+	vehicle(int w1, float w2)
+	{
+		wheels = w1;
+		weight = w2;
+	}
+	void printf()
+	{
+		cout << "wheels=" << wheels << "," << "weight=" << "weight" << endl;
+	}
+};
+class car :private vehicle
+{
+	int passenger_load;
+    public:
+		car(int w1,float w2,int p1):vehicle(w1,w2)
+        {
+			passenger_load = p1;
+        }
+		void printf()
+		{
+			vehicle::printf();
+			cout << "passenger_load=" << passenger_load << endl;
+		}
+};
+class truck :private vehicle
+{
+	int passenger_load;
+	float payload;
+public:
+truck(int w1,float w2,int p1,float p2):vehicle(w1,w2)
+{
+	passenger_load = p1;
+	payload = p2;
+}
+void printf()
+{
+	vehicle::printf();
+	cout << "passenger_load=" << passenger_load << "," << "payload=" << payload << endl;
+}
+};
+void main()
+{
+	vehicle v(1000, 842.2);
+	v.printf();
+	car c(134, 94.7, 84);
+	c.printf();
+	truck t(48,29.6,27,19.8);
+	t.printf();
+}
+
+
+
+
+
+
+
+
+运行截图：
+
+总结：主函数中定义了一个基类vehicle的动态指针数组 pt2vehicle，数组长度n来自输入数据 
+      vehicle **pt2vehicle = new vehicle*[n]; 
+主函数根据输入的车辆类型和车辆基本信息，建立相应的类对象，并且取址按序赋给基类指针数组元素，最后遍历基类指针数组 pt2vehicle，并按照指定的序号输出相应的车辆信息。
