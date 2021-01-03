@@ -1,0 +1,344 @@
+（一） 基础部分（个人独立做，占程序设计成绩的60%）
+1、函数问题（数的合并）
+编写一个能将两个数合并成一个数的函数fun，具体合并方式是：将两个两位数的正整数a和b合并形成一个整数放在c中，并将a的十位和个位依次存放在c数的十位和千位上，b的十位和个位依次存放在c数的个位和百位上，基本要求：在主函数中调用fun函数，fun函数要写出以下三种：（1）通过返回值将新数c传给主函数；（2）通过引用参数将新数传给主函数；（3）通过指针型参数将新数传给主函数。
+输入格式：
+一行，包含两个两位整数a和b。
+输出格式：
+一行，合并后的新数c。
+分析比较三种方式的区别。
+#include<stdio.h>//通过指针型参数（引用参数）将新数传给主函数。
+void fun(int a,int b,long*c)
+{
+*c=(a/10)*1000+(b%10)*100+(a%10)*10+(b/10);
+}
+void main(int)
+{int a,b;long c;
+printf("Input a ,b:");
+scanf("%d,%d",&a,&b);
+fun(a,b,&c);
+printf("The result is :%ld\n",c);
+}
+#include<stdio.h>//通过返回值将新数c传给主函数；
+int f(int a,int b)
+{
+int c,i,j,k,l;
+i=a/10;//a中十位放在c的千位
+j=a%10;// a中个位放在c的十位
+k=b/10;//b中十位放在c的百位
+l=b%10;// b中个位放在c的个位
+c=1000*i+j*10+k*100+l;
+return c;
+}
+int main()
+{
+int a,b,c;
+scanf("%d%d",&a,&b);
+c=f(a,b);
+printf("c=%d\n",c);
+return 0;
+}
+
+#include <iostream>
+using namespace std;
+void fun(int a,int b, int c);
+int main()
+{
+int a,b, c;
+printf("Input a ,b:");
+cin>>a>>b;
+fun(a,b,c);
+cout<<c<<endl;
+}
+void fun(int a,int b, int c)
+{
+	
+c=(a/10)*1000+(b%10)*100+(a%10)*10+(b/10);
+
+}
+遇到的问题：
+第一个：报错 [Error] ld returned 1 exit status
+可能出现的原因：
+1.是否已经有黑框在运行了？
+2.是否main出了问题？
+最后是因为已经有黑框在运行导致的。
+第二个：可以在 代码 的最后加上 system(＂pause＂)、getchar()、cin.get().
+2、线性表问题（猴子选大王）
+问题描述：
+一堆猴子都有编号，编号是1，2，3 ...m，这群猴子（m个）按照1-m的顺序围坐一圈，从第1开始数，每数到第N个，该猴子就要离开此圈，这样依次下来，直到圈中只剩下最后一只猴子，则该猴子为大王。
+基本要求：
+（1） 输入数据：输入m,n m,n 为整数，n<m
+（2）中文提示按照m个猴子，数n个数的方法，输出为大王的猴子是几号 ，建立一个函数来实现此功能
+（3）分别用数组和链表来实现，并比较分析不同存储结构下的时间复杂度和空间复杂度。数组利用下标定位，时间复杂度为O(m)，链表定位元素时间复杂度O(1)；
+空间复杂度为O(1)。
+用数组来实现的时候，插入数据和删除数据效率低，插入数据时，这个位置后面的数据在内存中都要向后移。删除数据时，这个数据后面的数据都要往前移动。 比如原来去了5个人，然后后来又去了一个人要坐在第三个位置上，那么第三个到第五个都要往后移动一个位子，将第三个位置留给新来的人。 当这个人走了的时候，因为他们要连在一起的，所以他后面几个人要往前移动一个位置，把这个空位补上。
+用数组来实现：在一个数组中，数组中用1表示猴子在圈中，用0表示猴子已经出圈，数组下标对应与猴子编号对应（例如数组元素a[0]值为1，表示第1只猴子尚在圈中，即a[i]代表编号为i+1的猴子是否在圈中）。一只猴子出圈，则将对应的数组值置为0；在报数过程中，要跨过值为0的猴子。
+#include<stdio.h>//用数组来实现
+int main()
+{
+	int m,n,number,count=1;		//number记猴子剩余个数，count记当前报数
+	int monkey[999];
+	int t;						//t记数组下标
+	int i;
+	printf("请输入猴子个数 m 和报数 n ：");
+	scanf("%d%d",&m,&n);
+	number = m;
+	for(i=0;i<m;i++)
+		monkey[i]=i+1;
+	t=0;
+	while(number>1)
+	{
+		if(monkey[t]>0)
+		{
+			if(count!=n)
+			{
+				count++;
+				t=(t+1)%m;		//t=(t+1)%m实现数组下标加1
+			}
+			else
+			{
+				monkey[t]=0;
+				count=1;
+				number--;
+				t=(t+1)%m;
+			}
+		}
+		else
+		{
+			t=(t+1)%m;
+		}
+	}
+	for(i=0;i<m;i++)
+	{
+		if(monkey[i]>0)
+			printf("猴子大王：%d\n",monkey[i]);
+	}
+	return 0;
+}
+
+
+用链表来实现
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef struct link {
+	int data;
+	struct link* next;
+}link, * linklist;
+
+void Create(linklist& L, int n)
+{
+	linklist p;
+	L = new link;
+	L->next = NULL;
+	linklist r;
+	r = L;
+	n = n - 1;
+	int i = 1;
+	while (n)
+	{
+		p = new link;
+		p->data = i;
+		p->next = r->next;
+		r->next = p;
+		r = p;
+		i++;
+		n--;
+	}
+	p = new link;
+	p->data = i;
+	p->next = L->next;
+	r->next = p;
+}
+
+void Output(linklist L, int n)
+{
+	linklist p;
+	p = L->next;
+	int flag = 1;
+	while (n--)
+	{
+		if (flag)
+		{
+			cout << p->data;
+			flag = 0;
+		}
+		else {
+			cout << " " << p->data;
+		}
+
+		p = p->next;
+	}
+	cout << endl;
+}
+
+void Find(linklist& L, int m)
+{
+	linklist p, r;
+	p = L;
+	int flag = 1;
+		while (p->next != p)
+		{
+			for (int i = 0; i < m - 1; i++)
+			{
+				p = p->next;
+			}
+			r = p->next;
+			p->next = p->next->next;
+			if (flag)
+			{
+				cout << r->data;
+				flag = 0;
+			}
+			else
+			{
+				cout << " " << r->data;
+			}
+
+			delete r;
+		}
+		cout << " " << p->data;
+		cout << endl;
+}
+
+int main()
+{
+	linklist L;
+	int n, m;
+	while (1)
+	{
+	    cout << "输入n和m" <<endl;
+	
+		cin>> n >> m;
+		if (n == 0 && m == 0)
+			break;
+		if (n == 0 && m != 0)
+			continue;
+		Create(L, n);
+		if(n==1)
+			cout << 1 << endl;
+		else if (m == 1&&n!=1)
+			Output(L, n);
+		else 
+			Find(L, m);
+			cout << "最后一个便是猴子大王 " <<endl;
+	}
+	return 0;
+}
+
+3、排序问题（奖学金）
+某小学最近得到了一笔赞助，打算拿出其中一部分为学习成绩优秀的前5名学生发奖学金。期末，每个学生都有3门课的成绩:语文、数学、英语。先按总分从高到低排序，如果两个同学总分相同，再按语文成绩从高到低排序，如果两个同学总分和语文成绩都相同，那么规定学号小的同学 排在前面，这样，每个学生的排序是唯一确定的。
+任务：先根据输入的3门课的成绩计算总分，然后按上述规则排序，最后按排名顺序输出前五名名学生的学号和总分。注意，在前5名同学中，每个人的奖学金都不相同，因此，你必须严格按上述规则排序。例如，在某个正确答案中，如果前两行的输出数据(每行输出两个数:学号、总分) 是:
+7 279
+5 279
+这两行数据的含义是:总分最高的两个同学的学号依次是7号、5号。这两名同学的总分都是279(总分等于输入的语文、数学、英语三科成绩之和)，但学号为7的学生语文成绩更高一些。如果你的前两名的输出数据是:
+5 279
+7 279
+则按输出错误处理，不能得分。
+输入：
+第1行为一个正整数n，表示该校参加评选的学生人数。
+第2到n+1行，每行有3个用空格隔开的数字，每个数字都在0到100之间。第j行的3个数字依次表示学号为j−1的学生的语文、数学、英语的成绩。每个学生的学号按照输入顺序编号为l∼n (恰好是输入数据的行号减1)。
+所给的数据都是正确的，不必检验。
+输入样例：
+8 
+80 89 89 
+88 98 78 
+90 67 80 
+87 66 91 
+78 89 91 
+88 99 77 
+67 89 64 
+78 89 98
+输出：
+共有5行，每行是两个用空格隔开的正整数，依次表示前5名学生的学号和总分。
+输出样例：
+8 265
+2 264 
+6 264 
+1 258 
+5 258
+基本要求：使用结构体实现
+实验步骤：排序除了冒泡，选择以外，可以使用更快的快速排序。C++自带sort函数能进行排序，只需对规则进行自定义即可。注意，使用sort要添加好algorithm头文件。根据题目信息，可以将学生信息存储至结构体中，这样更方便进行处理，接着再将排序规则写清楚，之后输入相关信息，排序后输出前五名学生信息即可完成。
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+/*使用控制台pauser运行此程序，或添加您自己的getch、系统（“暂停”）或输入循环*/
+int n; 
+typedef struct node{
+	int ch,ma,en;
+	int sum,id;
+}node;
+node stu[305]={0};
+
+bool cmp(node a,node b){
+	if(a.sum>b.sum) return true;
+	else if(a.sum==b.sum&&a.ch>b.ch) return true;
+	else if(a.sum==b.sum&&a.ch==b.ch&&a.id<b.id) return true;
+	else return false;
+}
+
+int main(int argc, char** argv) {
+	cin>>n;
+	for(int i=1;i<=n;i++){
+		cin>>stu[i].ch>>stu[i].ma>>stu[i].en;
+		stu[i].sum=stu[i].ch+stu[i].ma+stu[i].en;
+		stu[i].id=i;
+	}
+	sort(stu+1,stu+n+1,cmp);
+	for(int i=1;i<=5;i++){
+		cout<<stu[i].id<<" "<<stu[i].sum<<endl;
+	}
+	
+	return 0;
+}
+
+4、字符串问题
+疫情期间，瘟疫公司为了配合国家进行疫情防控工作，开始了对传染人数预测的研究。据悉，我国完备的医疗健康监测体系已经准确地绘制了P省感染分布情况地图。地图是一个N*M的矩形，地图上的每个点有三种状态未感染、被感染和被保护，分别用大写字母O,X,P表示。例如：
+OOOOOPOOOO
+OXOOOPOOOO
+OOOOOPOOOO
+OOOOOPOOOO
+之所以能根据监测数据成功预测，是因为某医疗科学团队经过实验推理证明，一段病毒周期之内一个感染区域会感染上、下、左、右四个方向上的区域，被保护的区域则不会被传染。例如，经历了1段病毒周期后的P省感染分布图变为：
+OXOOOPOOOO
+XXXOOPOOOO
+OXOOOPOOOO
+OOOOOPOOOO
+但是随着时间的推移，2段、3段、4段......很多段病毒周期过后，病毒的最大感染情况为：
+XXXXXPOOOO
+XXXXXPOOOO
+XXXXXPOOOO
+XXXXXPOOOO
+因为被保护区不会被感染，能将病毒的传染阻断。现在，作为瘟疫公司的高级工程师，你要实现的是输入一个地图和经历的病毒周期数，推算出经历了这些病毒周期后的新地图。
+输入
+共1+M+1行
+第一行: 两个数字N和M，表示地图的长宽。
+第二行开始的M行: 每行是长度为M的字符串，仅可能包含三个字母O、X或P，表示地图上每个区域的状态。
+第M+2行: 一个整数C，表示经历了C个病毒周期。
+输出
+共M行
+表示经历了C个病毒周期过后新的感染情况分布地图
+输入样例：
+10 4
+OOOOOPOOOO
+OXOOOPOOOO
+OOOOOPOOOO
+OOOOOPOOOO
+2
+输出样例：
+XXXOOPOOOO
+XXXXOPOOOO
+XXXOOPOOOO
+OXOOOPOOOO
+5、栈问题（多项式计算器）
+啊~多么美好的一个后序遍历问题...(疯狂暗示)本来要出另外一个题的...结果生成数据的时候翻车了就明天再出吧。今天先水一道多项式计算器。可不要去网上抄代码哦，一眼就看出来了。
+输入一个简单多项式，输出结果。多项式可能包含对整数的加减两种运算，中间没有空格。
+输入
+一行，一个多项式，保证输入合法
+输出
+一个结果
+输入样例：
+((1+2)*3+4)+5+6*7
+输出样例：
+60
+6、面向对象问题
+编写一个程序，有一个汽车类vehicle,它具有一个需传递参数的构造函数，类中的数据成员：车轮个数wheels和车重weight放在保护段中；小车类car是它的私有派生类，其中包含载人数passenger_load；卡车类truck是vehicle的私有派生类，其中包含载人类passenger_load和载重量payload。每个类都有相关数据的输出方法。
