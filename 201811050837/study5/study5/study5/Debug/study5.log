@@ -1,0 +1,4 @@
+﻿  fun.cpp
+e:\作业\2018-2022课程\2020.下半年课程\程序设计训练\程序\个人部分\study5\study5\study5\fun.cpp(20): warning C4715: “getPriority”: 不是所有的控件路径都返回值
+e:\作业\2018-2022课程\2020.下半年课程\程序设计训练\程序\个人部分\study5\study5\study5\fun.cpp(39): warning C4715: “doOperate”: 不是所有的控件路径都返回值
+  study5.vcxproj -> E:\作业\2018-2022课程\2020.下半年课程\程序设计训练\程序\个人部分\study5\study5\study5\Debug\study5.exe
