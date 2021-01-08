@@ -1,0 +1,114 @@
+%%%%%%链表
+%%%
+#include <stdio.h>
+#include <stdlib.h>
+#include<iostream.h>
+ 
+typedef struct monkey {
+    int num;     //记录猴子数
+    struct monkey * next;
+} monkey_t;
+
+monkey_t *head = NULL, *tail = NULL;     //head指向第一个节点，tail指向最后一个节点
+ 
+void create(int m) 
+{   //猴子的个数
+    int i;
+    monkey_t *p = NULL, *q = NULL;      //p指向一个新分配的节点，q指向当前最后一个节点
+    p = (monkey_t *)malloc(sizeof (monkey_t));
+    p->num = 1;     //初始化，使p为头指针，使其为1
+    p->next = NULL;  
+    head = p;
+    q = p;
+    for (i = 2; i <= m; i++) {
+        p = (monkey_t *)malloc(sizeof (monkey_t));     //分配内存
+        p->num = i;  //用来表示猴子号
+        p->next = NULL;
+        q->next = p;
+        q = p;
+    }
+    tail = q;
+    tail->next = head;     //形成循环链表
+}
+ 
+int select(int n)
+{
+    int x = 0, res;
+    monkey_t *p = NULL, *q = NULL;     //p指向当前要判断的节点，q跟随在p的后面，比p慢一拍
+    q = tail;
+    do {
+        p = q->next;     //p赋值为q相邻的下一个结点
+        x++;
+        if (x % n == 0) {
+            q->next = p->next;     //删除该结点
+            free(p);     //p = NULL，释放空间
+        } else {
+            q = p;       //q跟进一步
+        }
+    } while (q != q->next);     //循环直到只剩下一个节点
+    //head = q;
+    res = q->num;
+    free(q);
+    return res;
+}
+ 
+void main() {
+    int n, m;
+	cout<<"Please input the number of monkey:";
+    cin>>m;
+    cout<<"Please input the number of interval:";
+    cin>>n;
+    create(m);
+    cout<<"Monkey king is No."<< select(n)<<endl;
+
+}
+
+
+%%%%%%%数组
+%%%%%
+#include <stdio.h>
+#include<iostream.h>
+
+int main() {
+	int m,n;
+	cout<<"Please input the number of monkey:";
+	cin>>m;
+	cout<<"Please input the number of interval:";
+    cin>>n;
+	if (m == 1) {
+		cout<<"Monkey king is No."<<m<<endl;
+		return 0;
+	}
+	int arr[1000] = {0};          //定义数组，空间大小就给猴子最多的情况，1000，都赋初始值0
+	for (int i = 1; i <= m; ++i) {    //根据输入的值，有多少只猴子，就把多少个元素改成1
+		arr[i] = 1;
+	}
+	int a = 0;              //用于计数淘汰猴子的数量
+	int x = 0;				//记录报数的次数，用于计算   b%3
+	int j = 1;				//定义下标
+	while (a<(m-1))      //这里因为要留一只猴子，所以淘汰猴子数得小于猴子总数减一
+	{
+		if (arr[j] == 0) {      //如果此下标数组的值为0，则跳过
+			j++;                    
+			if (j == (m+1) ) {         //判断是不是最后一只猴子，如果本轮结束，继续从1开始报数
+				j = 1;
+			}
+			continue;
+		}
+		x++;
+		if (x%n == 0) {         //如果是n的倍数，则淘汰，改下标元素赋值为0
+			arr[j] = 0;
+			a++;                  //记录淘汰个数
+		}
+		j++;
+		if (j == (m+1) ) {
+			j = 1;
+		}
+	}
+	for (int k = 1; k <= m; ++k) {
+		if (arr[k] == 1) {
+			cout<<"Monkey king is No."<<k<<endl;           //得到仅剩的猴子
+		}
+	}
+	return 0;
+}
