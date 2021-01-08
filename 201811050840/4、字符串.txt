@@ -1,0 +1,55 @@
+#include<iostream.h>
+void main()
+{
+	int M=0,N=0,i,j,c;
+	cout<<"请输入行数M："<<endl;
+	cin>>M;
+	cout<<"请输入列数N: "<<endl;
+	cin>>N;
+    cout<<"请输入病毒周期c:"<<endl;
+	cin>>c;
+	char a[100][100],a1[100][100]={'B'};
+	cout<<"请输入矩阵："<<endl;
+	for(i=0;i<M;i++)
+	{	
+		for(j=0;j<N;j++)
+		{
+			cin>>a[i][j];
+		}
+	}
+	while(c--)
+	{
+		for(i=0;i<M;i++)
+		{
+			for(j=0;j<N;j++)
+			{
+				if(a[i][j]=='X')
+				{
+				a1[i][j]=a[i][j];
+				}
+			}
+		}
+     for(i=0;i<N;i++)
+		{
+			for(j=0;j<M;j++)
+			{
+				if(a[i][j]==a1[i][j])
+				{
+                    if(a[i-1][j] != 'P') a[i-1][j] ='X';	
+					if(a[i+1][j] != 'P') a[i+1][j]='X';
+					if(a[i][j+1] != 'P') a[i][j+1]='X';
+					if(a[i][j-1] != 'P') a[i][j-1]='X';
+				}
+			}
+	 }
+
+	}
+  for(i=0;i<M;i++)
+		{
+			cout<<endl;
+			for(j=0;j<N;j++)
+				cout<<a[i][j];
+		}
+		cout<<endl;
+	
+}
